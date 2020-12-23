@@ -2032,6 +2032,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -2047,7 +2048,8 @@ __webpack_require__.r(__webpack_exports__);
       check: false,
       edit: false,
       index: null,
-      msg_test: 'hello'
+      msg_test: 'hello',
+      users: []
     };
   },
   mounted: function mounted() {
@@ -2068,9 +2070,10 @@ __webpack_require__.r(__webpack_exports__);
       name: 'leen',
       degree: 50
     }];
+    console.log(this.users);
+    this.getUsers();
   },
-  props: {
-    users: Array
+  props: {//  users: Array,
   },
   computed: {
     reversedMessage: function reversedMessage() {
@@ -2085,6 +2088,16 @@ __webpack_require__.r(__webpack_exports__);
     }
   },
   methods: {
+    getUsers: function getUsers() {
+      var _this = this;
+
+      axios.get('get_users').then(function (res) {
+        console.log(res.data.users);
+        _this.users = res.data.users;
+      })["catch"](function (error) {
+        console.log(error);
+      });
+    },
     plus: function plus() {
       this.count += 2;
     },
@@ -37884,14 +37897,18 @@ var render = function() {
     _c(
       "div",
       { staticClass: "row" },
-      _vm._l(_vm.users, function(user) {
-        return _c("div", [
-          _c("span", [_vm._v("name: " + _vm._s(user.name))]),
-          _vm._v(" "),
-          _c("span", [_vm._v("email: " + _vm._s(user.email))])
-        ])
-      }),
-      0
+      [
+        _c("h1", [_vm._v("Axios")]),
+        _vm._v(" "),
+        _vm._l(_vm.users, function(user) {
+          return _c("div", [
+            _c("span", [_vm._v("name: " + _vm._s(user.name))]),
+            _vm._v(" "),
+            _c("span", [_vm._v("email: " + _vm._s(user.email))])
+          ])
+        })
+      ],
+      2
     ),
     _vm._v(" "),
     _c(
@@ -50405,8 +50422,8 @@ __webpack_require__.r(__webpack_exports__);
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! E:\xampp\htdocs\project-vue\resources\js\app.js */"./resources/js/app.js");
-module.exports = __webpack_require__(/*! E:\xampp\htdocs\project-vue\resources\sass\app.scss */"./resources/sass/app.scss");
+__webpack_require__(/*! E:\WEB\ucas 2020\laravel and vuejs\project-vue\resources\js\app.js */"./resources/js/app.js");
+module.exports = __webpack_require__(/*! E:\WEB\ucas 2020\laravel and vuejs\project-vue\resources\sass\app.scss */"./resources/sass/app.scss");
 
 
 /***/ })

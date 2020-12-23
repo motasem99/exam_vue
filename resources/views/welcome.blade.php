@@ -22,7 +22,7 @@
         </div>
 
             <div id="app" class="container">
-                <app-test :users="{{ $users }}"></app-test>
+                <app-test></app-test>
             </div>
 
             <footer class="container">Footer</footer>

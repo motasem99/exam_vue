@@ -9,7 +9,11 @@ class UserController extends Controller
 {
     //
     public function index () {
+        return view('welcome');
+    }
+
+    public function getData() {
         $users = User::all();
-        return view('welcome', compact('users'));
+        return response()->json(compact('users'));
     }
 }

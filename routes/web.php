@@ -19,4 +19,5 @@ use Illuminate\Support\Facades\Route;
 // });
 
 Route::get('/', 'UserController@index');
+Route::get('/get_users', 'UserController@getData');
 

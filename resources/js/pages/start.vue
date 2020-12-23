@@ -42,6 +42,7 @@
             <hr>
 
             <div class="row">
+                <h1>Axios</h1>
                 <div v-for="user in users">
                     <span>name: {{ user.name }}</span>
                     <span>email: {{ user.email }}</span>
@@ -106,6 +107,7 @@ export default {
                 edit: false,
                 index: null,
                 msg_test: 'hello',
+                users: [],
             }
         },
 
@@ -116,10 +118,13 @@ export default {
                 {id: 3, name: 'noor', degree:50},
                 {id: 4, name: 'leen', degree:50},
                 ]
+                console.log(this.users)
+                this.getUsers()
+
             },
 
         props: {
-            users: Array,
+          //  users: Array,
         },
 
         computed: {
@@ -137,6 +142,16 @@ export default {
         },
 
             methods:{
+                getUsers() {
+                        axios.get('get_users')
+                        .then(res => {
+                            console.log(res.data.users)
+                            this.users = res.data.users
+                        }).catch(error => {
+                            console.log(error)
+                        })
+                },
+
                 plus(){
                     this.count += 2;
                 },
