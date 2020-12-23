@@ -2027,104 +2027,124 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
-//
-//
-//
-//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
-      count: 0,
-      std_name: null,
-      std_degree: null,
-      std_names: [],
+      std_Id: null,
+      name: '',
+      num: null,
+      section: null,
+      salary: null,
+      discounts: null,
+      net_salary: null,
       message: "",
       class_style: "btn btn-info",
       title: 'button to plus',
       error: null,
-      num: 10,
       check: false,
       edit: false,
       index: null,
-      msg_test: 'hello',
-      users: []
+      data: [],
+      option_usr: "انتاج"
     };
   },
   mounted: function mounted() {
-    this.std_names = [{
-      id: 1,
-      name: 'ahmed',
-      degree: 50
-    }, {
-      id: 2,
-      name: 'mutasem',
-      degree: 50
-    }, {
-      id: 3,
-      name: 'noor',
-      degree: 50
-    }, {
-      id: 4,
-      name: 'leen',
-      degree: 50
-    }];
-    console.log(this.users);
     this.getUsers();
-  },
-  props: {//  users: Array,
-  },
-  computed: {
-    reversedMessage: function reversedMessage() {
-      return this.msg_test = this.msg_test.split('').reverse().join('');
-    }
-  },
-  watch: {
-    std_degree: function std_degree(newVal) {
-      if (newVal > 100) {
-        this.std_degree = 100;
-      }
-    }
   },
   methods: {
     getUsers: function getUsers() {
       var _this = this;
 
       axios.get('get_users').then(function (res) {
-        console.log(res.data.users);
-        _this.users = res.data.users;
+        _this.data = res.data.data;
       })["catch"](function (error) {
         console.log(error);
       });
     },
-    plus: function plus() {
-      this.count += 2;
-    },
     addStd: function addStd() {
+      if (!this.name) {
+        return alert('please enter the name');
+      }
+
+      if (!this.num) {
+        return alert('please enter the number');
+      }
+
+      if (!this.salary) {
+        return alert('please enter the salary');
+      }
+
+      if (!this.discounts) {
+        return alert('please enter the discounts');
+      }
+
+      if (!this.net_salary) {
+        return alert('please enter the net salary');
+      }
+
       if (!this.edit) {
-        var last_item = this.std_names[this.std_names.length - 1];
+        var last_item = this.data[this.data.length - 1];
         var std = {
           id: last_item.id + 1,
-          name: this.std_name,
-          degree: this.std_degree
+          name: this.name,
+          num: this.num,
+          section: this.option_usr,
+          salary: this.salary,
+          discounts: this.discounts,
+          net_salary: this.net_salary
         };
-        this.std_names.push(std);
+        this.data.push(std);
         this.class_style = "btn btn-dark";
+        axios.post("add_user", {
+          name: this.name,
+          num: this.num,
+          section: this.option_usr,
+          salary: this.salary,
+          discounts: this.discounts,
+          net_salary: this.net_salary
+        });
       } else {
-        this.std_names[this.index].name = this.std_name;
-        this.std_names[this.index].degree = this.std_degree;
+        this.data[this.index].name = this.name;
+        this.data[this.index].num = this.num;
+        axios.post("edit_user/" + this.std_Id, {
+          name: this.name,
+          num: this.num,
+          section: this.section,
+          salary: this.salary,
+          discounts: this.discounts,
+          net_salary: this.net_salary
+        });
         this.index = null;
         this.edit = false;
-        this.std_name = null;
-        this.std_degree = null;
+        this.name = null;
+        this.num = null;
+        this.section = null;
+        this.salary = null;
+        this.discounts = null;
+        this.net_salary = null;
       }
     },
-    edit_std: function edit_std(index) {
-      this.std_name = this.std_names[index].name;
-      this.std_degree = this.std_names[index].degree;
-      this.edit = true;
-      this.index = index;
+    edit_std: function edit_std(data, index) {
+      try {
+        this.std_Id = data.id;
+        this.name = data.name;
+        this.num = data.num;
+        this.section = data.section;
+        this.salary = data.salary;
+        this.discounts = data.discounts;
+        this.net_salary = data.net_salary;
+        this.edit = true;
+        this.index = index;
+      } catch (err) {
+        console.log(err);
+      }
+    },
+    totalUnless: function totalUnless() {
+      var totalnet_salary = this.salary - this.discounts;
+      this.net_salary = totalnet_salary;
+    },
+    onChangeSelect: function onChangeSelect(event) {
+      this.option_usr = event.target.value;
     }
   }
 });
@@ -37771,58 +37791,38 @@ var render = function() {
   return _c("div", [
     _c("hr"),
     _vm._v(" "),
-    _c("div", [
-      _c("span", [_vm._v(_vm._s(_vm.count))]),
-      _vm._v(" "),
-      _c(
-        "button",
-        {
-          attrs: { title: _vm.title, type: "button" },
-          on: {
-            click: function($event) {
-              return _vm.plus()
-            }
-          }
-        },
-        [_vm._v("\n        click to plus")]
-      )
-    ]),
-    _vm._v(" "),
-    _c("br"),
-    _vm._v(" "),
-    _c("hr"),
-    _vm._v(" "),
     _c("div", { staticClass: "row" }, [
       _c("div", { staticClass: "col-6 form-group" }, [
-        _c("label", { attrs: { for: "std_name" } }, [_vm._v("Std_name:")]),
+        _c("label", { attrs: { for: "name" } }, [_vm._v(":الاسم")]),
         _vm._v(" "),
         _c("input", {
           directives: [
             {
               name: "model",
               rawName: "v-model",
-              value: _vm.std_name,
-              expression: "std_name"
+              value: _vm.name,
+              expression: "name"
             }
           ],
           staticClass: "form-control",
           attrs: {
             type: "text",
-            name: "std_name",
-            placeholder: "enter the name"
+            name: "name",
+            placeholder: "enter the name",
+            required: ""
           },
-          domProps: { value: _vm.std_name },
+          domProps: { value: _vm.name },
           on: {
             input: function($event) {
               if ($event.target.composing) {
                 return
               }
-              _vm.std_name = $event.target.value
+              _vm.name = $event.target.value
             }
           }
         }),
         _vm._v(" "),
-        !_vm.std_name
+        !_vm.name
           ? _c("span", { staticClass: "text-danger" }, [
               _vm._v("ارجو تعبئة الحقل")
             ])
@@ -37830,39 +37830,170 @@ var render = function() {
       ]),
       _vm._v(" "),
       _c("div", { staticClass: "col-6 form-group" }, [
-        _c("label", { attrs: { for: "std_degree" } }, [_vm._v("degree")]),
+        _c("label", { attrs: { for: "num" } }, [_vm._v(":الرقم الوظيفي")]),
         _vm._v(" "),
         _c("input", {
           directives: [
             {
               name: "model",
               rawName: "v-model",
-              value: _vm.std_degree,
-              expression: "std_degree"
+              value: _vm.num,
+              expression: "num"
             }
           ],
           staticClass: "form-control",
           attrs: {
             type: "number",
-            name: "std_degree",
-            placeholder: "enter the degree"
+            name: "num",
+            placeholder: "enter the number",
+            required: ""
           },
-          domProps: { value: _vm.std_degree },
+          domProps: { value: _vm.num },
           on: {
             input: function($event) {
               if ($event.target.composing) {
                 return
               }
-              _vm.std_degree = $event.target.value
+              _vm.num = $event.target.value
             }
           }
         }),
         _vm._v(" "),
-        !_vm.std_degree
+        !_vm.num
           ? _c("span", { staticClass: "text-danger" }, [
               _vm._v("ارجو تعبئة الحقل")
             ])
           : _vm._e()
+      ]),
+      _vm._v(" "),
+      _c("div", { staticClass: "col-6 form-group" }, [
+        _c("label", { attrs: { for: "num" } }, [_vm._v(":القسم")]),
+        _vm._v(" "),
+        _c(
+          "select",
+          {
+            staticClass: "form-control",
+            attrs: { name: "section", id: "" },
+            on: {
+              change: function($event) {
+                return _vm.onChangeSelect($event)
+              }
+            }
+          },
+          [
+            _c("option", { attrs: { value: "انتاج" } }, [_vm._v("انتاج")]),
+            _vm._v(" "),
+            _c("option", { attrs: { value: "ادارة" } }, [_vm._v("ادارة")]),
+            _vm._v(" "),
+            _c("option", { attrs: { value: "مالية" } }, [_vm._v("مالية")])
+          ]
+        )
+      ]),
+      _vm._v(" "),
+      _c("div", { staticClass: "col-6 form-group" }, [
+        _c("label", { attrs: { for: "num" } }, [_vm._v(":الراتب")]),
+        _vm._v(" "),
+        _c("input", {
+          directives: [
+            {
+              name: "model",
+              rawName: "v-model",
+              value: _vm.salary,
+              expression: "salary"
+            }
+          ],
+          staticClass: "form-control",
+          attrs: {
+            type: "number",
+            name: "num",
+            placeholder: "enter the salary",
+            required: ""
+          },
+          domProps: { value: _vm.salary },
+          on: {
+            input: function($event) {
+              if ($event.target.composing) {
+                return
+              }
+              _vm.salary = $event.target.value
+            }
+          }
+        }),
+        _vm._v(" "),
+        !_vm.salary
+          ? _c("span", { staticClass: "text-danger" }, [
+              _vm._v("ارجو تعبئة الحقل")
+            ])
+          : _vm._e()
+      ]),
+      _vm._v(" "),
+      _c("div", { staticClass: "col-6 form-group" }, [
+        _c("label", { attrs: { for: "num" } }, [_vm._v(":الخصومات")]),
+        _vm._v(" "),
+        _c("input", {
+          directives: [
+            {
+              name: "model",
+              rawName: "v-model",
+              value: _vm.discounts,
+              expression: "discounts"
+            }
+          ],
+          staticClass: "form-control",
+          attrs: {
+            type: "number",
+            name: "num",
+            placeholder: "enter the discounts",
+            required: ""
+          },
+          domProps: { value: _vm.discounts },
+          on: {
+            input: function($event) {
+              if ($event.target.composing) {
+                return
+              }
+              _vm.discounts = $event.target.value
+            }
+          }
+        }),
+        _vm._v(" "),
+        !_vm.discounts
+          ? _c("span", { staticClass: "text-danger" }, [
+              _vm._v("ارجو تعبئة الحقل")
+            ])
+          : _vm._e()
+      ]),
+      _vm._v(" "),
+      _c("div", { staticClass: "col-6 form-group" }, [
+        _c("label", { attrs: { for: "num" } }, [_vm._v(":باقي الراتب")]),
+        _vm._v(" "),
+        _c("input", {
+          directives: [
+            {
+              name: "model",
+              rawName: "v-model",
+              value: _vm.net_salary,
+              expression: "net_salary"
+            }
+          ],
+          staticClass: "form-control",
+          attrs: {
+            type: "number",
+            disabled: "",
+            name: "num",
+            placeholder: "net_salary",
+            required: ""
+          },
+          domProps: { value: _vm.net_salary },
+          on: {
+            input: function($event) {
+              if ($event.target.composing) {
+                return
+              }
+              _vm.net_salary = $event.target.value
+            }
+          }
+        })
       ]),
       _vm._v(" "),
       _c(
@@ -37881,35 +38012,26 @@ var render = function() {
               }
             },
             [_vm._v("Save")]
+          ),
+          _vm._v(" "),
+          _c(
+            "button",
+            {
+              class: _vm.class_style,
+              attrs: { type: "button" },
+              on: {
+                click: function($event) {
+                  return _vm.totalUnless()
+                }
+              }
+            },
+            [_vm._v("calc net_salary")]
           )
         ]
       )
     ]),
     _vm._v(" "),
-    _c("div", { staticClass: "row" }, [
-      _c("span", [_vm._v(_vm._s(_vm.reversedMessage))])
-    ]),
-    _vm._v(" "),
-    _c("br"),
-    _vm._v(" "),
     _c("hr"),
-    _vm._v(" "),
-    _c(
-      "div",
-      { staticClass: "row" },
-      [
-        _c("h1", [_vm._v("Axios")]),
-        _vm._v(" "),
-        _vm._l(_vm.users, function(user) {
-          return _c("div", [
-            _c("span", [_vm._v("name: " + _vm._s(user.name))]),
-            _vm._v(" "),
-            _c("span", [_vm._v("email: " + _vm._s(user.email))])
-          ])
-        })
-      ],
-      2
-    ),
     _vm._v(" "),
     _c(
       "table",
@@ -37919,25 +38041,19 @@ var render = function() {
         _vm._v(" "),
         _c(
           "tbody",
-          _vm._l(_vm.std_names, function(item, index) {
+          _vm._l(_vm.data, function(human) {
             return _c("tr", [
-              _c("td", [_vm._v(_vm._s(item["id"]))]),
+              _c("td", [_vm._v(" " + _vm._s(human.name) + " ")]),
               _vm._v(" "),
-              _c("td", [
-                _vm._v(
-                  "\n                        " +
-                    _vm._s(item.name) +
-                    "\n                    "
-                )
-              ]),
+              _c("td", [_vm._v(" " + _vm._s(human.num) + " ")]),
               _vm._v(" "),
-              _c("td", [
-                _vm._v(
-                  "\n                        " +
-                    _vm._s(item.degree) +
-                    "\n                    "
-                )
-              ]),
+              _c("td", [_vm._v(" " + _vm._s(human.section) + " ")]),
+              _vm._v(" "),
+              _c("td", [_vm._v(" " + _vm._s(human.salary) + " ")]),
+              _vm._v(" "),
+              _c("td", [_vm._v(" " + _vm._s(human.discounts) + " ")]),
+              _vm._v(" "),
+              _c("td", [_vm._v(" " + _vm._s(human.net_salary) + " ")]),
               _vm._v(" "),
               _c("td", [
                 _c(
@@ -37947,25 +38063,11 @@ var render = function() {
                     attrs: { type: "button" },
                     on: {
                       click: function($event) {
-                        return _vm.edit_std(index)
+                        _vm.edit_std(human, _vm.data.indexOf(human))
                       }
                     }
                   },
                   [_vm._v("Edit")]
-                ),
-                _vm._v(" "),
-                _c(
-                  "button",
-                  {
-                    staticClass: "btn btn-danger",
-                    attrs: { type: "button" },
-                    on: {
-                      click: function($event) {
-                        return _vm.addStd()
-                      }
-                    }
-                  },
-                  [_vm._v("Delete")]
                 )
               ])
             ])
@@ -37973,24 +38075,6 @@ var render = function() {
           0
         )
       ]
-    ),
-    _vm._v(" "),
-    _c("hr"),
-    _vm._v(" "),
-    _c(
-      "ul",
-      _vm._l(_vm.std_names, function(value) {
-        return _c("li", [
-          _c("span", { staticStyle: { color: "blue" } }, [
-            _vm._v("\n            " + _vm._s(value.name) + "\n            ")
-          ]),
-          _vm._v(" "),
-          _c("span", { staticStyle: { color: "yellow" } }, [
-            _vm._v("\n            " + _vm._s(value.degree) + "\n            ")
-          ])
-        ])
-      }),
-      0
     ),
     _vm._v(" "),
     _c("hr")
@@ -38003,11 +38087,17 @@ var staticRenderFns = [
     var _c = _vm._self._c || _h
     return _c("thead", [
       _c("tr", [
-        _c("th", [_vm._v("#")]),
+        _c("th", [_vm._v("Name")]),
         _vm._v(" "),
-        _c("th", [_vm._v("Std Name")]),
+        _c("th", [_vm._v("number")]),
         _vm._v(" "),
-        _c("th", [_vm._v("Degree")]),
+        _c("th", [_vm._v("section")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("salary")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("discount")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("net_salary")]),
         _vm._v(" "),
         _c("th", [_vm._v("Action")])
       ])
@@ -50422,8 +50512,8 @@ __webpack_require__.r(__webpack_exports__);
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! E:\WEB\ucas 2020\laravel and vuejs\project-vue\resources\js\app.js */"./resources/js/app.js");
-module.exports = __webpack_require__(/*! E:\WEB\ucas 2020\laravel and vuejs\project-vue\resources\sass\app.scss */"./resources/sass/app.scss");
+__webpack_require__(/*! E:\WEB\ucas 2020\laravel and vuejs\final-exam\resources\js\app.js */"./resources/js/app.js");
+module.exports = __webpack_require__(/*! E:\WEB\ucas 2020\laravel and vuejs\final-exam\resources\sass\app.scss */"./resources/sass/app.scss");
 
 
 /***/ })

@@ -18,6 +18,7 @@ use Illuminate\Support\Facades\Route;
 //     return view('welcome');
 // });
 
-Route::get('/', 'UserController@index');
-Route::get('/get_users', 'UserController@getData');
-
+Route::get('/', 'HumanController@index');
+Route::get('/get_users', 'HumanController@getData');
+Route::post('/edit_user/{id}', 'HumanController@updateData');
+Route::post('add_user','HumanController@add_user');

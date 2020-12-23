@@ -1,92 +1,86 @@
 <template>
         <div>
+            <hr>
 
-                <hr>
-            <div>
-            <span>{{ count }}</span>
-            <button v-on:click="plus()"
-            v-bind:title="title"
-            type="button">
-            click to plus</button>
-        </div>
-
-        <br>
-
-        <hr>
-
-        <div class="row">
+            <div class="row">
             <div class="col-6 form-group">
-                <label for="std_name">Std_name:</label>
-                <input v-model="std_name" type="text" name="std_name" class="form-control" placeholder="enter the name">
-                <span v-if="!std_name" class="text-danger">ارجو تعبئة الحقل</span>
+                <label for="name">:الاسم</label>
+                <input v-model="name" type="text"  name="name" class="form-control" placeholder="enter the name" required />
+                <span v-if="!name" class="text-danger">ارجو تعبئة الحقل</span>
             </div>
 
             <div class="col-6 form-group">
-                <label for="std_degree">degree</label>
-                <input v-model="std_degree" type="number" name="std_degree" class="form-control" placeholder="enter the degree">
-                <span v-if="!std_degree" class="text-danger">ارجو تعبئة الحقل</span>
+                <label for="num">:الرقم الوظيفي</label>
+                <input v-model="num" type="number" name="num" class="form-control" placeholder="enter the number" required />
+                <span v-if="!num" class="text-danger">ارجو تعبئة الحقل</span>
+            </div>
+
+            <div class="col-6 form-group">
+                <label for="num">:القسم</label>
+                <!-- <input v-model="section" type="text" name="num" class="form-control" placeholder="enter the section" required /> -->
+                <select class="form-control" name="section" id=""  @change="onChangeSelect($event)">
+                    <option  value="انتاج">انتاج</option>
+                    <option  value="ادارة">ادارة</option>
+                    <option  value="مالية">مالية</option>
+                </select>
+            </div>
+
+            <div class="col-6 form-group">
+                <label for="num">:الراتب</label>
+                <input v-model="salary" type="number" name="num" class="form-control" placeholder="enter the salary" required />
+                <span v-if="!salary" class="text-danger">ارجو تعبئة الحقل</span>
+            </div>
+
+            <div class="col-6 form-group">
+                <label for="num">:الخصومات</label>
+                <input v-model="discounts" type="number" name="num" class="form-control" placeholder="enter the discounts" required />
+                <span v-if="!discounts" class="text-danger">ارجو تعبئة الحقل</span>
+            </div>
+
+            <div class="col-6 form-group">
+                <label for="num">:باقي الراتب</label>
+                <input v-model="net_salary" type="number" disabled name="num" class="form-control" placeholder="net_salary" required />
             </div>
 
             <div class=" form-group" style="margin-left: 16px;">
                 <button type="button" @click="addStd()" :class="class_style">Save</button>
+                <button type="button" @click="totalUnless()" :class="class_style">calc net_salary</button>
             </div>
 
         </div>
 
-        <div class="row">
-            <span>{{ reversedMessage }}</span>
-        </div>
-
-            <br>
-
-            <hr>
-
-            <div class="row">
-                <h1>Axios</h1>
-                <div v-for="user in users">
-                    <span>name: {{ user.name }}</span>
-                    <span>email: {{ user.email }}</span>
-                </div>
-            </div>
+        <hr>
 
         <table class="table table-bordered" border="2">
             <thead>
                 <tr>
-                    <th>#</th>
-                    <th>Std Name</th>
-                    <th>Degree</th>
+                    <th>Name</th>
+                    <th>number</th>
+                    <th>section</th>
+                    <th>salary</th>
+                    <th>discount</th>
+                    <th>net_salary</th>
                     <th>Action</th>
                 </tr>
             </thead>
             <tbody>
-                <tr v-for="(item, index) in std_names">
-                        <td>{{ item['id'] }}</td>
+
+                    <tr v-for="(human) in data">
+                        <td> {{ human.name }} </td>
+                        <td> {{ human.num }} </td>
+                        <td> {{ human.section }} </td>
+                        <td> {{ human.salary }} </td>
+                        <td> {{ human.discounts }} </td>
+                        <td> {{ human.net_salary }} </td>
                         <td>
-                            {{ item.name }}
-                        </td>
-                        <td>
-                            {{ item.degree }}
-                        </td>
-                        <td>
-                            <button type="button" @click="edit_std(index)" class="btn btn-info">Edit</button>
-                            <button type="button" @click="addStd()" class="btn btn-danger">Delete</button>
+                            <button type="button" @click="edit_std(human, data.indexOf(human))" class="btn btn-info">Edit</button>
                         </td>
                 </tr>
+
             </tbody>
         </table>
         <hr>
 
-        <ul>
-            <li v-for="value in std_names">
-                <span style="color: blue;">
-                {{ value.name }}
-                </span>
-                <span style="color:yellow;">
-                {{ value.degree }}
-                </span>
-        </li>
-        </ul>
-            <hr>
     </div>
 </template>
 
@@ -94,92 +88,123 @@
 export default {
     data () {
                 return {
-                count: 0 ,
-                std_name:null,
-                std_degree:null,
-                std_names: [],
+                std_Id:null,
+                name:'',
+                num:null,
+                section:null,
+                salary:null,
+                discounts:null,
+                net_salary:null,
                 message: "",
                 class_style:"btn btn-info",
                 title:'button to plus',
                 error: null,
-                num :10,
                 check: false,
                 edit: false,
                 index: null,
-                msg_test: 'hello',
-                users: [],
+                data: [],
+                option_usr: "انتاج"
             }
         },
 
             mounted () {
-                this.std_names = [
-                {id: 1, name: 'ahmed', degree:50},
-                {id: 2, name: 'mutasem', degree:50},
-                {id: 3, name: 'noor', degree:50},
-                {id: 4, name: 'leen', degree:50},
-                ]
-                console.log(this.users)
                 this.getUsers()
-
             },
 
-        props: {
-          //  users: Array,
-        },
-
-        computed: {
-            reversedMessage() {
-               return this.msg_test = this.msg_test.split('').reverse().join('')
-            }
-        },
-
-        watch: {
-            std_degree(newVal) {
-                if(newVal > 100) {
-                    this.std_degree = 100
-                }
-            }
-        },
-
             methods:{
+
                 getUsers() {
                         axios.get('get_users')
                         .then(res => {
-                            console.log(res.data.users)
-                            this.users = res.data.users
+                          this.data = res.data.data
                         }).catch(error => {
                             console.log(error)
                         })
                 },
 
-                plus(){
-                    this.count += 2;
-                },
                 addStd(){
+                    if(!this.name){
+                        return alert('please enter the name')
+                    }
+                    if(!this.num){
+                        return alert('please enter the number')
+                    }
+                    if(!this.salary){
+                        return alert('please enter the salary')
+                    }
+                    if(!this.discounts){
+                        return alert('please enter the discounts')
+                    }
+                    if(!this.net_salary){
+                        return alert('please enter the net salary')
+                    }
                     if(!this.edit) {
-                        var last_item = this.std_names[this.std_names.length - 1]
+                        var last_item = this.data[this.data.length - 1]
                         const std = {
                             id: last_item.id+1 ,
-                            name:this.std_name,
-                            degree:this.std_degree
+                            name:this.name,
+                            num:this.num,
+                            section:this.option_usr,
+                            salary:this.salary,
+                            discounts:this.discounts,
+                            net_salary:this.net_salary
                         }
-                        this.std_names.push(std)
+                        this.data.push(std)
                         this.class_style = "btn btn-dark"
+                        axios.post(`add_user`, {
+                            name: this.name,
+                            num: this.num,
+                            section:this.option_usr,
+                            salary:this.salary,
+                            discounts:this.discounts,
+                            net_salary:this.net_salary
+                        })
                     }
                     else {
-                        this.std_names[this.index].name = this.std_name
-                        this.std_names[this.index].degree = this.std_degree
+                        this.data[this.index].name = this.name
+                        this.data[this.index].num = this.num
+                        axios.post(`edit_user/`+ this.std_Id, {
+                            name: this.name,
+                            num: this.num,
+                            section:this.section,
+                            salary:this.salary,
+                            discounts:this.discounts,
+                            net_salary:this.net_salary
+                        })
                         this.index = null
                         this.edit = false
-                        this.std_name = null
-                        this.std_degree = null
+                        this.name = null
+                        this.num = null
+                        this.section = null
+                        this.salary = null
+                        this.discounts = null
+                        this.net_salary = null
+                    }
+
+                },
+                edit_std(data,index) {
+                    try{
+                        this.std_Id = data.id
+                        this.name = data.name
+                        this.num = data.num
+                        this.section = data.section
+                        this.salary = data.salary
+                        this.discounts = data.discounts
+                        this.net_salary = data.net_salary
+                        this.edit = true
+                        this.index = index
+                    }
+                    catch(err){
+                        console.log(err)
                     }
                 },
-                edit_std(index) {
-                    this.std_name = this.std_names[index].name
-                    this.std_degree = this.std_names[index].degree
-                    this.edit = true
-                    this.index = index
+                totalUnless(){
+                    var totalnet_salary =  this.salary - this.discounts
+                    this.net_salary = totalnet_salary
+                },
+
+                onChangeSelect(event){
+                   this.option_usr =  event.target.value
                 }
             },
 }
