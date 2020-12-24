@@ -11,21 +11,22 @@
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
 
         <!-- Styles -->
-    <!-- <link rel="stylesheet" href="/css/style.css"> -->
 
     </head>
     <body>
 
-        <div class="">
-            <div class="">
+        <div class="container">
+            <div class="row">
                 <h1>HomePage</h1>
             </div>
 
         </div>
 
             <div id="app" class="container">
-                <router-view></router-view>
+                <add-view></add-view>
             </div>
+
+            <footer class="container">Footer</footer>
 
 
         </header>

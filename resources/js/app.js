@@ -7,6 +7,10 @@
 require('./bootstrap');
 
 window.Vue = require('vue');
+window.Router = require('vue-router').default;
+window.Vue.use(window.Router)
+const start = require("./pages/start.vue").default;
+const add = require("./pages/add.vue").default;
 
 /**
  * The following block of code may be used to automatically register your
@@ -19,8 +23,8 @@ window.Vue = require('vue');
 // const files = require.context('./', true, /\.vue$/i)
 // files.keys().map(key => Vue.component(key.split('/').pop().split('.')[0], files(key).default))
 
-Vue.component('example-component', require('./components/ExampleComponent.vue').default);
-Vue.component('app-test',require('./pages/start.vue').default);
+Vue.component('router-view',require('./pages/start.vue').default);
+Vue.component('add-view',require('./pages/add.vue').default);
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to
@@ -28,6 +32,24 @@ Vue.component('app-test',require('./pages/start.vue').default);
  * or customize the JavaScript scaffolding to fit your unique needs.
  */
 
+let router = new Router({
+    mode: 'history',
+    routes: [
+    {
+        path: '/',
+        name: 'home',
+        component: start
+    }, {
+        path: '/add',
+        name: 'add',
+        component: add
+    }
+    ],
+})
+
+
 const app = new Vue({
     el: '#app',
+    router
 });
+

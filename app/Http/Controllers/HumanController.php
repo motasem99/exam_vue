@@ -12,6 +12,9 @@ class HumanController extends Controller
         return view('welcome');
     }
 
+    public function addPage (){
+        return view("add");
+    }
     public function getData() {
         $data = Human::all();
         return response()->json(compact('data'));

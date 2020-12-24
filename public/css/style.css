@@ -54,13 +54,11 @@ table {
 td,
 th {
     text-align: center;
-    border: 1px solid #ccc;
     border-radius: 5px;
+    border: 1px solid #ccc;
     margin: 1rem;
 }
-table {
-    /* width: 600px; */
-}
+
 thead td {
     font-weight: bold;
     text-align: center;
