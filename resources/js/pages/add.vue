@@ -16,9 +16,9 @@
                 <label for="num">:القسم</label>
                 <!-- <input v-model="section" type="text" name="num" class="form-control" placeholder="enter the section" required /> -->
                 <select class="form-control" name="section" id=""  @change="onChangeSelect($event)">
-                    <option  value="انتاج">انتاج</option>
-                    <option  value="ادارة">ادارة</option>
-                    <option  value="مالية">مالية</option>
+                    <option value="انتاج">انتاج</option>
+                    <option value="ادارة">ادارة</option>
+                    <option value="مالية">مالية</option>
                 </select>
             </div>
 
@@ -53,10 +53,7 @@
 export default {
     data () {
                 return {
-                    bgc: {
-			                color: ''
-		                },
-                std_Id:null,
+                human_id:null,
                 name:'',
                 num:null,
                 section:null,
@@ -70,12 +67,13 @@ export default {
                 check: false,
                 edit: false,
                 index: null,
-                data: [],
-                option_usr: "انتاج"
+                option_usr: "انتاج",
+                item: {}
             }
         },
 
             mounted () {
+                console.log(this.$route.query)
                 this.getUsers()
             },
 
@@ -84,10 +82,21 @@ export default {
                 getUsers() {
                         axios.get('get_users')
                         .then(res => {
-                          this.data = res.data.data
+                            console.log(res.data.data)
+                          if(this.$route.query.edit) {
+                              const item = res.data.data.filter(data => data.id == this.$route.query.id)[0]
+                                this.name = item.name
+                                this.num = item.num
+                                this.section = item.section
+                                this.salary = item.salary
+                                this.discounts = item.discounts
+                                this.net_salary = item.net_salary
+                                this.edit = true;
+                            }
                         }).catch(error => {
                             console.log(error)
                         })
+
                 },
 
                 addStd(){
@@ -107,17 +116,6 @@ export default {
                         return alert('please enter the net salary')
                     }
                     if(!this.edit) {
-                        var last_item = this.data[this.data.length - 1]
-                        const std = {
-                            id: last_item.id+1 ,
-                            name:this.name,
-                            num:this.num,
-                            section:this.option_usr,
-                            salary:this.salary,
-                            discounts:this.discounts,
-                            net_salary:this.net_salary
-                        }
-                        this.data.push(std)
                         this.class_style = "btn btn-dark"
                         axios.post(`add_user`, {
                             name: this.name,
@@ -130,9 +128,7 @@ export default {
                         window.alert('saved info')
                     }
                     else {
-                        this.data[this.index].name = this.name
-                        this.data[this.index].num = this.num
-                        axios.post(`edit_user/`+ this.std_Id, {
+                        axios.post(`edit_user/`+this.$route.query.id , {
                             name: this.name,
                             num: this.num,
                             section:this.section,
@@ -140,33 +136,11 @@ export default {
                             discounts:this.discounts,
                             net_salary:this.net_salary
                         })
-                        this.index = null
-                        this.edit = false
-                        this.name = null
-                        this.num = null
-                        this.section = null
-                        this.salary = null
-                        this.discounts = null
-                        this.net_salary = null
+                        window.alert('تم التعديل')
+
                     }
 
 
-                },
-                edit_std(data,index) {
-                    try{
-                        this.std_Id = data.id
-                        this.name = data.name
-                        this.num = data.num
-                        this.section = data.section
-                        this.salary = data.salary
-                        this.discounts = data.discounts
-                        this.net_salary = data.net_salary
-                        this.edit = true
-                        this.index = index
-                    }
-                    catch(err){
-                        console.log(err)
-                    }
                 },
                 totalUnless(){
                     var totalnet_salary =  this.salary - this.discounts

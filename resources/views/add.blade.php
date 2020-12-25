@@ -12,6 +12,12 @@
 
         <!-- Styles -->
 
+        <style>
+            a{
+                color: white !important;
+            }
+        </style>
+
     </head>
     <body>
 

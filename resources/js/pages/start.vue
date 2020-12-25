@@ -19,14 +19,15 @@
             <tbody>
 
                     <tr v-for="(human) in data">
-                        <td> {{ human.name }} </td>
+                        <td v-bind:style="bgc"> {{ human.name }} </td>
+                        <!-- <td> {{ human.name }} </td> -->
                         <td> {{ human.num }} </td>
                         <td> {{ human.section }} </td>
                         <td> {{ human.salary }} </td>
                         <td> {{ human.discounts }} </td>
                         <td> {{ human.net_salary }} </td>
                         <td>
-                            <button type="button" @click="edit_std(human, data.indexOf(human))" class="btn btn-info"><a :href="`/add?edit=true&id=${std_Id}`" >تعديل</a></button>
+                            <button type="button" @click="edit_std(human, data.indexOf(human))" class="btn btn-info"><a :href="`/add?edit=true&id=${human_id}`" >تعديل</a></button>
                         </td>
                 </tr>
 
@@ -42,7 +43,10 @@
 export default {
     data () {
                 return {
-                std_Id:null,
+                       bgc: {
+			                color: ''
+		                },
+                human_id:null,
                 name:'',
                 num:null,
                 section:null,
@@ -55,13 +59,12 @@ export default {
                 edit: false,
                 index: null,
                 data: [],
-                option_usr: 'انتاج'
+                option_usr: 'انتاج',
             }
         },
 
             mounted () {
                 this.getUsers()
-
             },
 
             methods:{
@@ -69,7 +72,7 @@ export default {
                 getUsers() {
                         axios.get('get_users')
                         .then(res => {
-                          this.data = res.data.data
+                        this.data = res.data.data
                         }).catch(error => {
                             console.log(error)
                         })
@@ -77,7 +80,7 @@ export default {
 
                 edit_std(data,index) {
                     try{
-                        this.std_Id = data.id
+                        this.human_id = data.id
                     }
                     catch(err){
                         console.log(err)

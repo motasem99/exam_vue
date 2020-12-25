@@ -1962,10 +1962,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
-      bgc: {
-        color: ''
-      },
-      std_Id: null,
+      human_id: null,
       name: '',
       num: null,
       section: null,
@@ -1979,11 +1976,12 @@ __webpack_require__.r(__webpack_exports__);
       check: false,
       edit: false,
       index: null,
-      data: [],
-      option_usr: "انتاج"
+      option_usr: "انتاج",
+      item: {}
     };
   },
   mounted: function mounted() {
+    console.log(this.$route.query);
     this.getUsers();
   },
   methods: {
@@ -1991,7 +1989,20 @@ __webpack_require__.r(__webpack_exports__);
       var _this = this;
 
       axios.get('get_users').then(function (res) {
-        _this.data = res.data.data;
+        console.log(res.data.data);
+
+        if (_this.$route.query.edit) {
+          var item = res.data.data.filter(function (data) {
+            return data.id == _this.$route.query.id;
+          })[0];
+          _this.name = item.name;
+          _this.num = item.num;
+          _this.section = item.section;
+          _this.salary = item.salary;
+          _this.discounts = item.discounts;
+          _this.net_salary = item.net_salary;
+          _this.edit = true;
+        }
       })["catch"](function (error) {
         console.log(error);
       });
@@ -2018,17 +2029,6 @@ __webpack_require__.r(__webpack_exports__);
       }
 
       if (!this.edit) {
-        var last_item = this.data[this.data.length - 1];
-        var std = {
-          id: last_item.id + 1,
-          name: this.name,
-          num: this.num,
-          section: this.option_usr,
-          salary: this.salary,
-          discounts: this.discounts,
-          net_salary: this.net_salary
-        };
-        this.data.push(std);
         this.class_style = "btn btn-dark";
         axios.post("add_user", {
           name: this.name,
@@ -2040,9 +2040,7 @@ __webpack_require__.r(__webpack_exports__);
         });
         window.alert('saved info');
       } else {
-        this.data[this.index].name = this.name;
-        this.data[this.index].num = this.num;
-        axios.post("edit_user/" + this.std_Id, {
+        axios.post("edit_user/" + this.$route.query.id, {
           name: this.name,
           num: this.num,
           section: this.section,
@@ -2050,29 +2048,7 @@ __webpack_require__.r(__webpack_exports__);
           discounts: this.discounts,
           net_salary: this.net_salary
         });
-        this.index = null;
-        this.edit = false;
-        this.name = null;
-        this.num = null;
-        this.section = null;
-        this.salary = null;
-        this.discounts = null;
-        this.net_salary = null;
-      }
-    },
-    edit_std: function edit_std(data, index) {
-      try {
-        this.std_Id = data.id;
-        this.name = data.name;
-        this.num = data.num;
-        this.section = data.section;
-        this.salary = data.salary;
-        this.discounts = data.discounts;
-        this.net_salary = data.net_salary;
-        this.edit = true;
-        this.index = index;
-      } catch (err) {
-        console.log(err);
+        window.alert('تم التعديل');
       }
     },
     totalUnless: function totalUnless() {
@@ -2136,10 +2112,14 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
-      std_Id: null,
+      bgc: {
+        color: ''
+      },
+      human_id: null,
       name: '',
       num: null,
       section: null,
@@ -2170,7 +2150,7 @@ __webpack_require__.r(__webpack_exports__);
     },
     edit_std: function edit_std(data, index) {
       try {
-        this.std_Id = data.id;
+        this.human_id = data.id;
       } catch (err) {
         console.log(err);
       }
@@ -38067,7 +38047,9 @@ var render = function() {
           "tbody",
           _vm._l(_vm.data, function(human) {
             return _c("tr", [
-              _c("td", [_vm._v(" " + _vm._s(human.name) + " ")]),
+              _c("td", { style: _vm.bgc }, [
+                _vm._v(" " + _vm._s(human.name) + " ")
+              ]),
               _vm._v(" "),
               _c("td", [_vm._v(" " + _vm._s(human.num) + " ")]),
               _vm._v(" "),
@@ -38094,7 +38076,7 @@ var render = function() {
                   [
                     _c(
                       "a",
-                      { attrs: { href: "/add?edit=true&id=" + _vm.std_Id } },
+                      { attrs: { href: "/add?edit=true&id=" + _vm.human_id } },
                       [_vm._v("تعديل")]
                     )
                   ]

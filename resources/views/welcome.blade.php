@@ -13,6 +13,12 @@
         <!-- Styles -->
     <!-- <link rel="stylesheet" href="/css/style.css"> -->
 
+    <style>
+        a{
+            color: white !important;
+        }
+    </style>
+
     </head>
     <body>
 
